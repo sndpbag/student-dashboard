@@ -1,8 +1,8 @@
 // components/Layout.jsx - Main layout with sidebar and header
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import UserProfileModal from './modals/UserProfileModal';
-import LogoutModal from './modals/LogoutModal';
+import UserProfileModal from '../modals/UserProfileModal';
+import LogoutModal from '../modals/LogoutModal';
 
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -61,18 +61,87 @@ const Layout = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 relative">
-          {/* Mobile Sidebar Overlay */}
+        {/* Main Layout with Sidebar and Content */}
+        <div className="flex">
+          {/* Desktop Sidebar - Always visible on md screens and up */}
+          <aside className="hidden md:block w-64 glass rounded-xl p-4 mr-6 h-max sticky top-6">
+            <nav className="flex flex-col gap-2">
+              <NavLink 
+                to="/" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-home"></i>
+                <span>Dashboard</span>
+              </NavLink>
+              <NavLink 
+                to="/videos" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-video"></i>
+                <span>Videos</span>
+              </NavLink>
+              <NavLink 
+                to="/quiz" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-question-circle"></i>
+                <span>Quiz</span>
+              </NavLink>
+              <NavLink 
+                to="/analytics" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-chart-line"></i>
+                <span>Analytics</span>
+              </NavLink>
+              <NavLink 
+                to="/team" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-users"></i>
+                <span>Team</span>
+              </NavLink>
+              <NavLink 
+                to="/projects" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-folder"></i>
+                <span>Projects</span>
+              </NavLink>
+              <NavLink 
+                to="/calendar" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-calendar"></i>
+                <span>Calendar</span>
+              </NavLink>
+              <NavLink 
+                to="/settings" 
+                className={({isActive}) => `flex items-center gap-3 p-3 rounded-lg ${isActive ? 'bg-gradient-to-r from-pink-400/30 to-blue-300/30' : 'hover:bg-white/20'} transition`}
+              >
+                <i className="fas fa-cog"></i>
+                <span>Settings</span>
+              </NavLink>
+              <button 
+                onClick={() => setIsLogoutModalOpen(true)} 
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition text-red-500 mt-6"
+              >
+                <i className="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </nav>
+          </aside>
+          
+          {/* Mobile Sidebar - Only visible when open */}
           {isMobileMenuOpen && (
             <div 
               onClick={closeMobileMenu}
-              className="md:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-30"
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 md:hidden"
             ></div>
           )}
           
-          {/* Sidebar */}
-          <div className={`md:col-span-3 lg:col-span-2 glass rounded-xl p-4 h-max z-40 fixed md:static inset-y-0 left-0 w-64 md:w-auto mobile-menu md:transform-none ${isMobileMenuOpen ? 'active' : ''}`}>
-            <div className="flex justify-between items-center md:hidden mb-6">
+          <div className={`md:hidden fixed inset-y-0 left-0 w-64 glass p-4 z-40 transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className="flex justify-between items-center mb-6">
               <h2 className="font-semibold">Menu</h2>
               <button onClick={closeMobileMenu} className="p-2">
                 <i className="fas fa-times"></i>
@@ -154,7 +223,7 @@ const Layout = () => {
           </div>
           
           {/* Main Content */}
-          <div className="md:col-span-9 lg:col-span-10 md:ml-0 transition-all duration-300">
+          <div className="flex-1">
             <Outlet />
           </div>
         </div>
@@ -162,7 +231,10 @@ const Layout = () => {
 
       {/* Modals */}
       {isUserProfileModalOpen && (
-        <UserProfileModal onClose={() => setIsUserProfileModalOpen(false)} />
+        <UserProfileModal 
+          isOpen={isUserProfileModalOpen}
+          onClose={() => setIsUserProfileModalOpen(false)}
+        />
       )}
       
       {isLogoutModalOpen && (
